@@ -1,13 +1,12 @@
 #pragma once
 
 #include <limits>
-#include "color.h"
+#include <cstdlib>
 
 // Constants
 
-const double infinity = std::numeric_limits<double>::infinity();
+const double rt_infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
-const color color_white = color(1.0, 1.0, 1.0);
 
 // Utility Functions
 

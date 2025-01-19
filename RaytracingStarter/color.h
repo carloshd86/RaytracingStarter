@@ -7,6 +7,9 @@
 
 using color = vec3;
 
+const color color_white = color(1.0, 1.0, 1.0);
+const color color_black = color(0.0, 0.0, 0.0);
+
 inline void write_color(std::ostream& out, const color& pixel_color)
 {
 	auto r = pixel_color.x();
@@ -14,13 +17,10 @@ inline void write_color(std::ostream& out, const color& pixel_color)
 	auto b = pixel_color.z();
 
 	// Translate the [0,1] component values to the byte range [0,255].
-	//static const interval intensity(0.000, 0.999);
-	/*int rbyte = int(256.0 * intensity.clamp(r));
+	static const interval intensity(0.000, 0.999);
+	int rbyte = int(256.0 * intensity.clamp(r));
 	int gbyte = int(256.0 * intensity.clamp(g));
-	int bbyte = int(256.0 * intensity.clamp(b));*/
-	int rbyte = 0;
-	int gbyte = 0;
-	int bbyte = 0;
+	int bbyte = int(256.0 * intensity.clamp(b));
 
 	// Write out the pixel color components.
 	out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';

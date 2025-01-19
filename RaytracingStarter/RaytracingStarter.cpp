@@ -12,7 +12,7 @@
 #include "sphere.h"
 #include "rtstarterutils.h"
 
-// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 8
+// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 9.4
 
 int main()
 {
@@ -21,7 +21,7 @@ int main()
 	world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5));
 	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0));
 
-	camera cam(16.0 / 9.0, 400);
+	camera cam(16.0 / 9.0, 400, 100, 50);
 	cam.initialize();
 	cam.render(world);
 }

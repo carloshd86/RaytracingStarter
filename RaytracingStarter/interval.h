@@ -7,7 +7,7 @@ class interval
 public:
 	double min, max;
 
-	interval() : min(+infinity), max(-infinity) {} // Default interval is empty
+	interval() : min(+rt_infinity), max(-rt_infinity) {} // Default interval is empty
 
 	interval(double min, double max) : min(min), max(max) {}
 
@@ -26,7 +26,7 @@ public:
 		return min < x && max > x;
 	}
 
-	/*double clamp(double x) const
+	double clamp(double x) const
 	{
 		if (x < min)
 		{
@@ -37,10 +37,7 @@ public:
 			return max;
 		}
 		return x;
-	}*/
+	}
 
-	//static const interval empty, universe;
+	static const interval empty, universe;
 };
-//
-//const interval interval::empty = interval(+infinity, -infinity);
-//const interval interval::universe = interval(-infinity, +infinity);

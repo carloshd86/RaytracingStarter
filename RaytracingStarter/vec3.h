@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "rtstarterutils.h"
 
 class vec3
 {
@@ -96,6 +97,16 @@ public:
 			*this /= std::sqrt(size_sqr);
 		}
 	}
+
+	static vec3 random()
+	{
+		return vec3(random_double(), random_double(), random_double());
+	}
+
+	static vec3 random(double min, double max)
+	{
+		return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	}
 };
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code.
@@ -104,46 +115,79 @@ using point3 = vec3;
 
 // Vector Utility Functions
 
-inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
+inline std::ostream& operator<<(std::ostream& out, const vec3& v)
+{
 	return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
 
-inline vec3 operator+(const vec3& u, const vec3& v) {
+inline vec3 operator+(const vec3& u, const vec3& v)
+{
 	return vec3(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
 }
 
-inline vec3 operator-(const vec3& u, const vec3& v) {
+inline vec3 operator-(const vec3& u, const vec3& v)
+{
 	return vec3(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
 }
 
-inline vec3 operator*(const vec3& u, const vec3& v) {
+inline vec3 operator*(const vec3& u, const vec3& v)
+{
 	return vec3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 }
 
-inline vec3 operator*(double t, const vec3& v) {
+inline vec3 operator*(double t, const vec3& v)
+{
 	return vec3(t * v.e[0], t * v.e[1], t * v.e[2]);
 }
 
-inline vec3 operator*(const vec3& v, double t) {
+inline vec3 operator*(const vec3& v, double t)
+{
 	return t * v;
 }
 
-inline vec3 operator/(const vec3& v, double t) {
+inline vec3 operator/(const vec3& v, double t)
+{
 	return (1 / t) * v;
 }
 
-inline double dot(const vec3& u, const vec3& v) {
+inline double dot(const vec3& u, const vec3& v)
+{
 	return u.e[0] * v.e[0]
 		+ u.e[1] * v.e[1]
 		+ u.e[2] * v.e[2];
 }
 
-inline vec3 cross(const vec3& u, const vec3& v) {
+inline vec3 cross(const vec3& u, const vec3& v)
+{
 	return vec3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
 		u.e[2] * v.e[0] - u.e[0] * v.e[2],
 		u.e[0] * v.e[1] - u.e[1] * v.e[0]);
 }
 
-inline vec3 unit_vector(const vec3& v) {
-	return v / v.length();
+inline vec3 random_unit_vector()
+{
+	while (true)
+	{
+		vec3 p = vec3::random(-1.0, 1.0);
+		const double lensqr = p.length_squared();
+		// Reject small vectors where length square might be erroneously zero
+		constexpr double SMALL_NUMBER = 1.0e-160;
+		if (lensqr > SMALL_NUMBER && lensqr <= 1.0)
+		{
+			return p.get_safe_normal();
+		}
+	}
+}
+
+inline vec3 random_on_hemisphere(const vec3& normal)
+{
+	vec3 on_unit_sphere = random_unit_vector();
+	if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+	{
+		return on_unit_sphere;
+	}
+	else
+	{
+		return -on_unit_sphere;
+	}
 }
