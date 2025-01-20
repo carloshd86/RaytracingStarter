@@ -2,19 +2,16 @@
 
 #include "hittable.h"
 #include "color.h"
+#include "material.h"
 
 class camera {
 public:
-	double aspect_ratio;
-	int image_width;       // Rendered image width in pixel count
-	int samples_per_pixel; // Count of random samples for each pixel
-	int max_depth = 10;    // Maximum number of ray bounces into scene
-
 	camera(double aspect_ratio, int image_width, int samples_per_pixel, int max_depth)
 		: aspect_ratio(aspect_ratio)
 		, image_width(image_width)
 		, samples_per_pixel(samples_per_pixel)
-		, max_depth(max_depth) {
+		, max_depth(max_depth)
+	{
 	}
 
 	camera() : camera(1.0, 100, 10, 10) {}
@@ -28,7 +25,7 @@ public:
 			std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 			for (int i = 0; i < image_width; ++i)
 			{
-				color pixel_color = color_black;
+				color pixel_color = COLOR_BLACK;
 				for (int sample = 0; sample < samples_per_pixel; ++sample)
 				{
 					ray r = get_ray(i, j);
@@ -80,6 +77,11 @@ public:
 	}
 
 private:
+	double aspect_ratio;
+	int image_width;       // Rendered image width in pixel count
+	int samples_per_pixel; // Count of random samples for each pixel
+	int max_depth = 10;    // Maximum number of ray bounces into scene
+
 	int    image_height = 0;    // Rendered image height
 	double pixel_samples_scale = 0.0; // Color scale factor for a sum of pixel samples
 	point3 center;              // Camera center
@@ -92,21 +94,28 @@ private:
 		// If we've exceeded the ray bounce limit, no more light is gathered.
 		if (depth <= 0)
 		{
-			return color_black;
+			return COLOR_BLACK;
 		}
 
 		hit_record rec;
 		// Using a t slightly above the surface to avoid floating point error of being able to be just below the surface if using 0.0
 		if (world.hit(r, interval(0.001, rt_infinity), rec))
 		{
-			//return 0.5 * (rec.normal + color_white);
-			vec3 direction = random_on_hemisphere(rec.normal);
-			return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
+			ray scattered;
+			color attenuation;
+			if (rec.hit_material->scatter(r, rec, attenuation, scattered))
+			{
+				return attenuation * ray_color(scattered, depth - 1, world);
+			}
+			else
+			{
+				return COLOR_BLACK;
+			}
 		}
 
 		double a = 0.5 * (r.direction().y() + 1.0);
 		//double a = 0.5 * (r.direction().get_safe_normal().y() + 1.0);
-		return (1.0 - a) * color_white + a * color(0.5, 0.7, 1.0);
+		return (1.0 - a) * COLOR_WHITE + a * color(0.5, 0.7, 1.0);
 	}
 
 	ray get_ray(int i, int j) const

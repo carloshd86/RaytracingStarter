@@ -131,6 +131,7 @@
     <ClCompile Include="hittable.cpp" />
     <ClCompile Include="hittable_list.cpp" />
     <ClCompile Include="interval.cpp" />
+    <ClCompile Include="material.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="RaytracingStarter.cpp" />
     <ClCompile Include="rtstarterutils.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="hittable.h" />
     <ClInclude Include="hittable_list.h" />
     <ClInclude Include="interval.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="rtstarterutils.h" />
     <ClInclude Include="sphere.h" />

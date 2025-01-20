@@ -11,15 +11,25 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "rtstarterutils.h"
+#include "material.h"
 
-// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 9.4
+// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 11
+
+typedef std::shared_ptr<material> material_ptr;
 
 int main()
 {
 	hittable_list world;
 
-	world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5));
-	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0));
+	material_ptr material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+	material_ptr material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
+	material_ptr material_left = make_shared<metal>(color(0.8, 0.8, 0.8), 0.3);
+	material_ptr material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
+
+	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
+	world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
+	world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
 
 	camera cam(16.0 / 9.0, 400, 100, 50);
 	cam.initialize();

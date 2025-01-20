@@ -2,10 +2,17 @@
 
 #include "hittable.h"
 
+class material;
+
 class sphere : public hittable
 {
 public:
-	sphere(const point3& center, double radius) : center(center), radius(std::fmax(0.0, radius)) {}
+	sphere(const point3& center, double radius, std::shared_ptr<material> sphere_material)
+		: center(center)
+		, radius(std::fmax(0.0, radius))
+		, sphere_material(sphere_material)
+	{
+	}
 
 	bool hit(const ray& r, interval ray_t, hit_record& out_rec) const override
 	{
@@ -37,6 +44,7 @@ public:
 		out_rec.p = r.at(out_rec.t);
 		vec3 outward_normal = (out_rec.p - center) / radius;
 		out_rec.set_face_normal(r, outward_normal);
+		out_rec.hit_material = sphere_material;
 
 		return true;
 	}
@@ -44,5 +52,6 @@ public:
 private:
 	point3 center;
 	double radius;
+	std::shared_ptr<material> sphere_material;
 };
 
