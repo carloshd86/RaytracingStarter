@@ -6,15 +6,16 @@
 
 class camera {
 public:
-	camera(double aspect_ratio, int image_width, int samples_per_pixel, int max_depth)
+	camera(double aspect_ratio, int image_width, int samples_per_pixel, int max_depth, double vfov)
 		: aspect_ratio(aspect_ratio)
 		, image_width(image_width)
 		, samples_per_pixel(samples_per_pixel)
 		, max_depth(max_depth)
+		, vfov(vfov)
 	{
 	}
 
-	camera() : camera(1.0, 100, 10, 10) {}
+	camera() : camera(1.0, 100, 10, 10, 90.0) {}
 
 	void render(const hittable& world)
 	{
@@ -60,7 +61,9 @@ public:
 
 		// Viewport dimensions
 		double focal_length = 1.0;
-		double viewport_height = 2.0;
+		double theta = degrees_to_radians(vfov);
+		double h = std::tan(theta / 2.0);
+		double viewport_height = 2.0 * h * focal_length;
 		double viewport_width = viewport_height * (double(image_width) / double(image_height));
 
 		// Calculate the vectors across the horizontal and down the vertical viewport edges.
@@ -81,6 +84,8 @@ private:
 	int image_width;       // Rendered image width in pixel count
 	int samples_per_pixel; // Count of random samples for each pixel
 	int max_depth = 10;    // Maximum number of ray bounces into scene
+	double vfov = 90.0;    // Vertical view angle (field of view)
+
 
 	int    image_height = 0;    // Rendered image height
 	double pixel_samples_scale = 0.0; // Color scale factor for a sum of pixel samples
