@@ -13,7 +13,7 @@
 #include "rtstarterutils.h"
 #include "material.h"
 
-// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 11
+// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 11.2
 
 typedef std::shared_ptr<material> material_ptr;
 
@@ -23,7 +23,7 @@ int main()
 
 	material_ptr material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
 	material_ptr material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
-	material_ptr material_left = make_shared<metal>(color(0.8, 0.8, 0.8), 0.3);
+	material_ptr material_left = make_shared<dielectric>(1.50);;
 	material_ptr material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
 	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));

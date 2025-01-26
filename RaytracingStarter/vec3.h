@@ -44,28 +44,49 @@ public:
 		return *this *= 1 / t;
 	}
 
-	std::ostream& operator<<(std::ostream& out) {
+	std::ostream& operator<<(std::ostream& out) const
+	{
 		return out << e[0] << ' ' << e[1] << ' ' << e[2];
 	}
 
-	vec3 operator+(const vec3& v) {
+	vec3 operator+(const vec3& v) const
+	{
 		return vec3(e[0] + v.e[0], e[1] + v.e[1], e[2] + v.e[2]);
 	}
 
-	vec3 operator-(const vec3& v) {
+	vec3 operator+(double t) const
+	{
+		return vec3(e[0] + t, e[1] + t, e[2] + t);
+	}
+
+	vec3 operator-(const vec3& v) const
+	{
 		return vec3(e[0] - v.e[0], e[1] - v.e[1], e[2] - v.e[2]);
 	}
 
-	vec3 operator*(const vec3& v) {
+	vec3 operator-(double t) const
+	{
+		return vec3(e[0] - t, e[1] - t, e[2] - t);
+	}
+
+	vec3 operator*(const vec3& v) const
+	{
 		return vec3(e[0] * v.e[0], e[1] * v.e[1], e[2] * v.e[2]);
 	}
 
-	vec3 operator*(double t) {
+	vec3 operator*(double t) const
+	{
 		return vec3(t * e[0], t * e[1], t * e[2]);
 	}
 
-	vec3 operator/(double t) {
-		return (*this) * (1 / t);
+	vec3 operator/(const vec3& v) const
+	{
+		return vec3(e[0] * 1.0 / v.e[0], e[1] * 1.0 / v.e[1], e[2] * 1.0 / v.e[2]);
+	}
+
+	vec3 operator/(double t) const
+	{
+		return (*this) * (1.0 / t);
 	}
 
 	double length() const {
@@ -76,17 +97,21 @@ public:
 		return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
 	}
 
-	vec3 get_safe_normal()
+	vec3 get_safe_normal() const
 	{
 		double size_sqr = length_squared();
+
+		if (is_nearly_equal(size_sqr, 1.0))
+		{
+			return *this;
+		}
+
 		if (size_sqr > 0.f)
 		{
 			return *this / std::sqrt(size_sqr);
 		}
-		else
-		{
-			return vec3();
-		}
+
+		return vec3();
 	}
 
 	void normalize()
@@ -122,37 +147,12 @@ using point3 = vec3;
 
 // Vector Utility Functions
 
-inline std::ostream& operator<<(std::ostream& out, const vec3& v)
-{
-	return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
-}
-
-inline vec3 operator+(const vec3& u, const vec3& v)
-{
-	return vec3(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
-}
-
-inline vec3 operator-(const vec3& u, const vec3& v)
-{
-	return vec3(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
-}
-
-inline vec3 operator*(const vec3& u, const vec3& v)
-{
-	return vec3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
-}
-
 inline vec3 operator*(double t, const vec3& v)
 {
 	return vec3(t * v.e[0], t * v.e[1], t * v.e[2]);
 }
 
-inline vec3 operator*(const vec3& v, double t)
-{
-	return t * v;
-}
-
-inline vec3 operator/(const vec3& v, double t)
+inline vec3 operator/(double t, const vec3& v)
 {
 	return (1 / t) * v;
 }
@@ -202,4 +202,12 @@ inline vec3 random_on_hemisphere(const vec3& normal)
 inline vec3 reflect(const vec3& v, const vec3& n)
 {
 	return v - (2 * dot(v, n) * n);
+}
+
+inline vec3 refract(const vec3& uv, const vec3& n, double refraction_index)
+{
+	double cos_theta = std::fmin(dot(-uv, n), 1.0);
+	vec3 r_out_perp = refraction_index * (uv + cos_theta * n);
+	vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+	return r_out_perp + r_out_parallel;
 }

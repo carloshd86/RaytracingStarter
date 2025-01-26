@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <cmath>
 #include <cstdlib>
 
 // Constants
@@ -22,4 +23,11 @@ inline double random_double() {
 inline double random_double(double min, double max) {
 	// Returns a random real in [min,max).
 	return min + (max - min) * random_double();
+}
+
+inline bool is_nearly_equal(double value, double other)
+{
+	// Return true if the vector is close to zero in all dimensions.
+	constexpr double s = 1.0e-8;
+	return (std::fabs(value - other) < s);
 }
