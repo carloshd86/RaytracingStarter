@@ -199,6 +199,18 @@ inline vec3 random_on_hemisphere(const vec3& normal)
 	}
 }
 
+inline vec3 random_in_unit_disk()
+{
+	while (true)
+	{
+		vec3 v = vec3(random_double(-1.0, 1.0), random_double(-1.0, 1.0), 0.0);
+		if (v.length_squared() < 1.0)
+		{
+			return v;
+		}
+	}
+}
+
 inline vec3 reflect(const vec3& v, const vec3& n)
 {
 	return v - (2 * dot(v, n) * n);

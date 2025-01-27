@@ -13,7 +13,7 @@
 #include "rtstarterutils.h"
 #include "material.h"
 
-// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 12.2
+// https://raytracing.github.io/books/RayTracingInOneWeekend.html continue in 14
 
 typedef std::shared_ptr<material> material_ptr;
 
@@ -32,17 +32,23 @@ int main()
 	material_ptr material_blue = make_shared<lambertian>(COLOR_BLUE);
 	material_ptr material_red = make_shared<lambertian>(COLOR_RED);
 
-	double sphere_radius = std::cos(pi / 4);
-	world.add(make_shared<sphere>(point3(-sphere_radius, 0.0, -1.0), sphere_radius, material_blue));
-	world.add(make_shared<sphere>(point3(sphere_radius, 0.0, -1.0), sphere_radius, material_red));
+	const double sphere_radius = std::cos(pi / 4);
+	/*world.add(make_shared<sphere>(point3(-sphere_radius, 0.0, -1.0), sphere_radius, material_blue));
+	world.add(make_shared<sphere>(point3(sphere_radius, 0.0, -1.0), sphere_radius, material_red));*/
 
-	/*world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
 	world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
 	world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
 	world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.4, material_bubble));
-	world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));*/
+	world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
 
-	camera cam(16.0 / 9.0, 400, 100, 50, 90.0);
+	point3 look_from(-2.0, 2.0, 1.0);
+	point3 look_at(0.0, 0.0, -1.0);
+	vec3 up_vector(0.0, 1.0, 0.0);
+	double fov = 20.0;
+	double defocus_angle = 10.0;
+	double focus_dist = 3.4;
+	camera cam(16.0 / 9.0, 400, 100, 50, fov, look_from, look_at, up_vector, defocus_angle, focus_dist);
 	cam.initialize();
 	cam.render(world);
 }
